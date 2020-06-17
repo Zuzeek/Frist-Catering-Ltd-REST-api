@@ -41,6 +41,7 @@ public class EmployeeCardController {
 			consumes = MediaType.APPLICATION_JSON_VALUE, 
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public EmployeeCard register(@Valid @RequestBody EmployeeCard employeeDetails, String cardNumber) {
+		
 		return cardService.addEmployee(employeeDetails); 
 	}
     
@@ -136,24 +137,9 @@ public class EmployeeCardController {
 			throw new ResourceNotFoundException("Card not found, please register"); 
 	}
 	
-	@PostMapping(value = "/pin/{cardNumber}", 
-			consumes = MediaType.APPLICATION_JSON_VALUE, 
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public String pin(@PathVariable(value = "cardNumber") String cardNumber) {
-		EmployeeCard card = cardService.getSingleEmployeeCardByCardNumber(cardNumber); 
-		
-		if(card != null && card.getActive()) {
-			card.getEmployee().setPin(card.getEmployee().getPin());
-			cardService.saveCard(card); 
-			return card.getEmployee().getPin(); 
-		}
-		else 
-			throw new ResourceNotFoundException("Card not registered, please register your card"); 
-	}
-	
 	
 	@GetMapping(value = "/scan/scan/logout/{cardNumber}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public String logoutEmployeeCard(@PathVariable(value = "cardNumber") String cardNumber) {
+	public String logout(@PathVariable(value = "cardNumber") String cardNumber) {
 		EmployeeCard card = cardService.getSingleEmployeeCardByCardNumber(cardNumber); 
 		
 		if(card != null) {

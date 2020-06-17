@@ -13,7 +13,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -36,7 +35,7 @@ public class EmployeeCard extends RepresentationModel<EmployeeCard> implements S
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Integer id;
 	
-	@Lob // to persist a large object into db
+	@Column(length = 20000)
 	private Employee employee; // employee is the child entity 
 	
 	@Pattern(regexp = "^[\\d\\D]{16}$", message = "Enter 16 alphanumeric characters card number")
@@ -63,13 +62,15 @@ public class EmployeeCard extends RepresentationModel<EmployeeCard> implements S
 
 	protected EmployeeCard() {}
 
-	public EmployeeCard(
-			@Pattern(regexp = "^[\\d\\D]{16}$", message = "Enter 16 alphanumeric characters card number") @NotNull String dataCard,
-			Double balance) {
+	public EmployeeCard(Employee employee,
+			@Pattern(regexp = "^[\\d\\D]{16}$", message = "Enter 16 alphanumeric characters card number") @NotEmpty String dataCard,
+			Double balance, Boolean active) {
 		super();
+		this.employee = employee;
 		this.dataCard = dataCard;
 		this.balance = balance;
-	}
+		this.active = active;
+	}	
 
 	public Double topupBalance(Double topupAmount) {
 		if(topupAmount > 0.00) {
@@ -78,7 +79,6 @@ public class EmployeeCard extends RepresentationModel<EmployeeCard> implements S
 		}
 		return balance; 
 	}
-
 	
 	/*
 	* hashCode()is a unique hash/number attached to every object whenever the object is created.
